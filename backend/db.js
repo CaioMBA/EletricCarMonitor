@@ -1,4 +1,3 @@
-// db.js
 const sqlite3 = require("sqlite3").verbose();
 
 const db = new sqlite3.Database("./database.sqlite", (err) => {
@@ -17,7 +16,7 @@ const db = new sqlite3.Database("./database.sqlite", (err) => {
         CREATE TABLE IF NOT EXISTS stations (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           source TEXT,
-          recycle INTEGER,
+          recycle INTEGER DEFAULT 0,
           available INTEGER
         )`);
 

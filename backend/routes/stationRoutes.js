@@ -17,10 +17,15 @@ const authenticate = (req, res, next) => {
 };
 
 router.get("/", authenticate, (req, res) => {
-  db.all("SELECT * FROM stations WHERE available = 1", [], (err, rows) => {
-    if (err) return res.status(500).json({ message: "Erro ao buscar sessões" });
-    res.json(rows);
-  });
+  db.all(
+    "SELECT * FROM stations WHERE available = 1 ORDER BY recycle DESC",
+    [],
+    (err, rows) => {
+      if (err)
+        return res.status(500).json({ message: "Erro ao buscar sessões" });
+      res.json(rows);
+    }
+  );
 });
 
 router.post("/", authenticate, (req, res) => {
