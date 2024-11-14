@@ -101,6 +101,7 @@ button{
 
 .table-container table tbody tr td {
     padding-top: 5px;
+    text-transform: capitalize;
 }
 
 .table-actions {

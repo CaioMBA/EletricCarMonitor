@@ -7,6 +7,9 @@ import closeIcon from "../assets/icons/close_icon.png";
 
 function Dashboard() {
   const [chargingSessions, setChargingSessions] = useState([]);
+  const [preferenceMode, setPreferenceMode] = useState("");
+  const [preferenceBattery, setPreferenceBattery] = useState("");
+  const [status, setStatus] = useState("");
 
   const backToLogin = () => {
     localStorage.removeItem("token");
@@ -25,12 +28,28 @@ function Dashboard() {
     modal.hidden = true;
   }
 
-  async function updateSession(sessionId, status) {
+  function openEdit(id) {
+    let sessionIdnput = document.getElementById("SessionIDInput");
+    sessionIdnput.value = id;
+    showModal("edit-session");
+  }
+
+  function handleEditSession(e) {
+    e.preventDefault();
+    const sessionId = document.getElementById("SessionIDInput").value;
+    updateSession(
+      sessionId,
+      status,
+      `${preferenceMode} | ${preferenceBattery}%`
+    );
+  }
+
+  async function updateSession(sessionId, status, preferences) {
     const token = localStorage.getItem("token");
     try {
       const response = await api.put(
         `/sessions/${sessionId}`,
-        { status: status },
+        { status: status, preferences: preferences },
         {
           headers: { Authorization: `${token}` },
         }
@@ -63,6 +82,7 @@ function Dashboard() {
       <div className="table-container">
         <button onClick={backToLogin}>Return to Login</button>
         <button onClick={showModal}>Add New Session</button>
+        <button onClick={showModal}>Add New Station</button>
         <table>
           <thead>
             <tr>
@@ -84,11 +104,13 @@ function Dashboard() {
                 <td>{session.status}</td>
                 <td>
                   <div className="table-actions">
-                    <button onClick={() => showModal("edit-session")}>
+                    <button onClick={() => openEdit(session.id)}>
                       <img src={editIcon} alt="" />
                     </button>
                     <button
-                      onClick={() => updateSession(session.id, "canceled")}
+                      onClick={() =>
+                        updateSession(session.id, "canceled", null)
+                      }
                     >
                       <img src={deleteIcon} alt="" />
                     </button>
@@ -107,18 +129,16 @@ function Dashboard() {
           </button>
         </header>
         <div className="modal-content">
-          <form>
-            <input
-              type="number"
-              id="UserIdToResetPassword"
-              name="userID"
-              hidden
-            />
+          <form onSubmit={handleEditSession}>
+            <input type="number" id="SessionIDInput" name="userID" hidden />
             <strong>Preferences</strong>
             <div className="modal-content-row">
               <label htmlFor="preference-mode">
                 <span>Mode:</span>
-                <select name="preference-mode">
+                <select
+                  name="preference-mode"
+                  onChange={(e) => setPreferenceMode(e.target.value)}
+                >
                   <option value="quick-charge">quick-charge</option>
                   <option value="smart-charge">smart-charge</option>
                   <option value="adaptive-charge">adaptive-charge</option>
@@ -127,7 +147,10 @@ function Dashboard() {
               </label>
               <label htmlFor="preference-battery">
                 <span>Battery limit:</span>
-                <select name="preference-battery">
+                <select
+                  name="preference-battery"
+                  onChange={(e) => setPreferenceBattery(e.target.value)}
+                >
                   <option value="10">10%</option>
                   <option value="20">20%</option>
                   <option value="30">30%</option>
@@ -144,7 +167,10 @@ function Dashboard() {
             <div className="modal-content-row">
               <label htmlFor="status">
                 <span>Current status:</span>
-                <select name="status">
+                <select
+                  name="status"
+                  onChange={(e) => setStatus(e.target.value)}
+                >
                   <option value="pending">Pending</option>
                   <option value="onGoing">onGoing</option>
                   <option value="completed">Completed</option>
