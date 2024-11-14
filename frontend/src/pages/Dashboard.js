@@ -49,7 +49,7 @@ function Dashboard() {
   return (
     <div className="table-container">
       <button onClick={backToLogin}>return to login</button>
-      <button onClick={() => {}}></button>
+      <button onClick={() => {}}>Add new Session</button>
       <table>
         <thead>
           <tr>
@@ -63,7 +63,7 @@ function Dashboard() {
         </thead>
         <tbody>
           {chargingSessions.map((session) => (
-            <tr>
+            <tr id={session.id}>
               <td>{session.source}</td>
               <td>{session.station_id}</td>
               <td>{session.user_id}</td>
@@ -71,7 +71,7 @@ function Dashboard() {
               <td>{session.status}</td>
               <td>
                 <div className="table-actions">
-                  <button onClick={() => updateSession(session.id, "delete")}>
+                  <button onClick={() => updateSession(session.id, "edited")}>
                     <img src={editIcon} alt="" />
                   </button>
                   <button onClick={() => updateSession(session.id, "canceled")}>
