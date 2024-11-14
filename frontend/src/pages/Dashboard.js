@@ -1,16 +1,41 @@
 // src/pages/Dashboard.js
 import React, { useEffect, useState } from "react";
 import api from "../services/api";
+import "../css/dashboard.css";
+import editIcon from "../assets/icons/edit_icon.png";
+import deleteIcon from "../assets/icons/delete_icon.png";
 
 function Dashboard() {
   const [chargingSessions, setChargingSessions] = useState([]);
+
+  const backToLogin = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/login";
+  };
+
+  async function updateSession(sessionId, status) {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await api.put(
+        `/sessions/${sessionId}`,
+        { status: status },
+        {
+          headers: { Authorization: `${token}` },
+        }
+      );
+      console.log("Sessão atualizada:", response.data);
+      window.location.reload(true);
+    } catch (error) {
+      console.error("Erro ao atualizar a sessão:", error);
+    }
+  }
 
   useEffect(() => {
     const fetchSessions = async () => {
       try {
         const token = localStorage.getItem("token");
         const response = await api.get("/sessions", {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `${token}` },
         });
         setChargingSessions(response.data);
       } catch (error) {
@@ -22,20 +47,42 @@ function Dashboard() {
   }, []);
 
   return (
-    <div>
-      <h2>Dashboard de Recarga</h2>
-      {chargingSessions.length > 0 ? (
-        <ul>
+    <div className="table-container">
+      <button onClick={backToLogin}>return to login</button>
+      <button onClick={() => {}}></button>
+      <table>
+        <thead>
+          <tr>
+            <th>Source</th>
+            <th>Station</th>
+            <th>User</th>
+            <th>Preferences</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
           {chargingSessions.map((session) => (
-            <li key={session.id}>
-              Status: {session.status} - Fonte: {session.source} - Preferências:{" "}
-              {session.preferences}
-            </li>
+            <tr>
+              <td>{session.source}</td>
+              <td>{session.station_id}</td>
+              <td>{session.user_id}</td>
+              <td>{session.preferences}</td>
+              <td>{session.status}</td>
+              <td>
+                <div className="table-actions">
+                  <button onClick={() => updateSession(session.id, "delete")}>
+                    <img src={editIcon} alt="" />
+                  </button>
+                  <button onClick={() => updateSession(session.id, "canceled")}>
+                    <img src={deleteIcon} alt="" />
+                  </button>
+                </div>
+              </td>
+            </tr>
           ))}
-        </ul>
-      ) : (
-        <p>Nenhuma sessão de recarga encontrada.</p>
-      )}
+        </tbody>
+      </table>
     </div>
   );
 }
