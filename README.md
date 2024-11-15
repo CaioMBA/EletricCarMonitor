@@ -11,6 +11,7 @@ Gerenciamento de recarga: Controle e monitoramento de sessões de recarga.
 # Back-End
 API REST para gerenciar dados e integrar com o front-end.
 Endpoints para cadastro, consulta e gerenciamento de carregadores.
+link documentação postman: https://github.com/CaioMBA/EletricCarMonitor/releases/tag/EletricCarMonitor-Documentation
 
 # 🚀 Instalação e Uso
 Pré-requisitos:
