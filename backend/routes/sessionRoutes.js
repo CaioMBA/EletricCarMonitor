@@ -19,7 +19,15 @@ const authenticate = (req, res, next) => {
 // Endpoint para obter status de recarga
 router.get("/", authenticate, (req, res) => {
   db.all(
-    "SELECT * FROM charging_sessions WHERE user_id = ? and status != 10",
+    `SELECT 
+      cs.id, 
+      cs.status, 
+      cs.preferences, 
+      s.source AS station
+    FROM 
+      charging_sessions cs
+      join stations s on cs.station_id = s.id
+    WHERE cs.user_id = ?`,
     [req.userId],
     (err, rows) => {
       if (err)
@@ -41,7 +49,10 @@ router.put("/:id", authenticate, (req, res) => {
       if (err) {
         return res.status(500).json({ message: "Erro ao atualizar sessão" });
       }
-      if (status == "completed") {
+      if (
+        status.trim().toLowerCase() == "completed" ||
+        status.trim().toLowerCase() == "canceled"
+      ) {
         db.run(
           "UPDATE stations SET available = 1 WHERE id = ?",
           [station_id],

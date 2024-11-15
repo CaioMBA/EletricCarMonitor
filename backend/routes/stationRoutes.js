@@ -18,7 +18,7 @@ const authenticate = (req, res, next) => {
 
 router.get("/", authenticate, (req, res) => {
   db.all(
-    "SELECT * FROM stations WHERE available = 1 ORDER BY recycle DESC",
+    "SELECT * FROM stations ORDER BY recycle DESC, id DESC",
     [],
     (err, rows) => {
       if (err)
@@ -29,10 +29,10 @@ router.get("/", authenticate, (req, res) => {
 });
 
 router.post("/", authenticate, (req, res) => {
-  const { source } = req.body;
+  const { source, is_reciclable } = req.body;
   db.run(
-    "INSERT INTO stations (source, available) VALUES (?, 1)",
-    [source],
+    "INSERT INTO stations (source,recycle, available) VALUES (?,?, 1)",
+    [source, is_reciclable],
     (err) => {
       if (err)
         return res.status(500).json({ message: "Erro ao registrar estação" });
