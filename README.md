@@ -1,5 +1,5 @@
 # GS MOBILE DEV - 2024
-# INTEGRANTES: CAIO MANOEL BEZERRA DE ARAUJO (RM: 94778) | LUCAS FERRAZ MARTINS (RM: 94821)
+# INTEGRANTES: CAIO MANOEL BEZERRA DE ARAUJO (RM: 94778) | LUCAS FERRAZ MARTINS (RM: 94821) | GABRIEL FELIPE DE MARIA (RM: 94772)
 
 # EletricCarMonitor
 Sistema de monitoramento e gerenciamento de recarga de veículos elétricos, desenvolvido para um projeto acadêmico. Este repositório contém o front-end (React) e o back-end (API REST).
